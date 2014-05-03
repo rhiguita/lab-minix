@@ -1,5 +1,5 @@
 Operating System - Laboratory - Minix
 =====================================
 
-eng_us = This repository has some suggestions for the laboratories of the discipline of Operating Systems.
-pt_br  = Este repositório possui algumas sugestões para os laboratórios da disciplina de Sistemas Operacionais.
+eng_us = This repository has some suggestions for the laboratories of Operating Systems course.
+pt_br  = Este repositï¿½rio possui algumas sugestï¿½es para os laboratï¿½rios da disciplina de Sistemas Operacionais.
