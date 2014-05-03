@@ -1,0 +1,88 @@
+Following the System Call KILL
+------------------------------
+
+Software
+--------
+OS: Minix 3.2.1
+
+Files
+-----
+[1] - /usr/src/include/minix/callnr.h	= Constants with number and name from all the system call
+[2] - /usr/src/servers/pm/table.c	= Names of each of the routines of system calls
+[3] - /usr/src/servers/pm/proto.h	= Prototype all the routines of system calls
+[4] - /usr/src/servers/pm/signal.c	= System Call code from all the system call from type "signal"
+
+Step 1 - FIND THE NAME OF THE SYSTEM CALL
+-----------------------------------------
+1 - Let´s go to the directory from file [1]: cd /usr/src/include/minix
+2 - Open the file [1]: mined /usr/src/include/minix/callnr.h
+3 - Find the system call number 37, called "KILL" (#define KILL 37).
+
+Step 2 - FIND THE NAME OF THE FUNCTION FROM THE SYSTEM CALL
+-----------------------------------------------------------
+1 - Let´s go the PM (Process Manager) directory of the file [2]: cd /usr/src/servers/pm
+2 - Open the file [2]: mined /usr/src/servers/pm/table.c
+3 - Find the system call number 37, called "do_kill".
+
+Step 3 - FIND THE PROTOTYPE FROM THE FUNCTION
+---------------------------------------------
+1 - Open the file [3]: mined /usr/src/servers/pm/proto.h
+2 - Find the function called: "int do_kill(void);"
+3 - Take a look in the line that shows where is this function (signal.c)
+
+Step 4 - FIND THE CODE FROM THE SYSTEM CALL
+-------------------------------------------
+1 - Open the file [4]: mined /usr/src/servers/pm/signal.c
+2 - Find the function "int do_kill"
+3 - This function just have one line:
+return check_sig(m_in.pid, m_in.sig_nr, FALSE /* ksig */);
+4 - Add the following line as the first line inside the function:
+printf("\ndo_kill");
+
+Passo 5 - FIND THE FUNCTION "check_sig"
+---------------------------------------
+1 - Inside the opened file [4], find the following function:
+int check_sig(proc_id, signo, ksig)
+2 - This function have 3 parameters:
+pid_t proc_id = PID from the process
+signo = signal to send
+ksig = value different from 0 means a signal from kernel
+3 - Add the following line as the first line inside the function:
+printf("\ncheck_sig - Proc = %d, Signo = %d, Ksig = %d",proc_id,signo,ksig);
+4 - Save the file: Ctrl+W
+
+Step 6 - COMPILE THE "PM" SERVER
+--------------------------------
+1 - Type "make" to process the "Makefile"
+2 - If everything went well the file "pm" will be generated
+
+Step 7 - RECOMPILE THE KERNEL
+-----------------------------
+1 - Go to this directory: cd /usr/src/releasetools
+2 - Type: make install
+3 - Reboot the system: reboot
+
+Step 8 - TEST 1
+---------------
+1 - Login in two terminals (ttyc0 e ttyc1)
+2 - Inside "ttyc0", show the process list (ps -a)
+3 - Send the signal "KILL" to "-sh" in "ttyc1" and see:
+do_kill
+check_sig - Proc = 136*, Signo = 9, Ksig = 0
+*136 = This is the PID from "-sh", as an example, 136
+
+Step 9 - TEST 2
+----------------
+1 - Create a file in your HOME directory with the following code:
+#include <stdio.h>
+#include <signal.h>
+
+int main() {
+	int pid;
+	printf("\nPID to kill: ");
+	scanf("&d",&pid);
+	kill(pid,9);
+	return 0;
+}
+2 - The value "9" in "kill(pid,9)" means the signal KILL
+3 - Do the same as in Step 8

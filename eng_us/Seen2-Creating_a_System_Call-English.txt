@@ -13,12 +13,12 @@ knowledge: how to use "vi" and basic concepts about "C language"
 
 We will use those files:
 ------------------------
-[1] - /usr/src/include/minix/callnr.h	= Constantes indicando o nome da chamada e o seu número
-[2] - /usr/src/servers/pm/table.c	= Nomes das rotinas de cada uma das chamadas de sistema
-[3] - /usr/src/servers/pm/proto.h	= Protótipo de todas as rotinas de chamadas de sistema
-[4] - /usr/src/servers/pm/misc.c	= O código das chamadas de sistema do tipo "misc"
-[5] - /usr/include/minhachamadalib.h	= O include que chama a nossa chamada de sistema (Este arquivo será criado)
-[6] - /root/teste1.c			= O programa que irá testar nossa chamada de sistema (Este arquivo será criado)
+[1] - /usr/src/include/minix/callnr.h	= Constants with number and name from all the system call
+[2] - /usr/src/servers/pm/table.c	= Names of each of the routines of system calls
+[3] - /usr/src/servers/pm/proto.h	= Prototype all the routines of system calls
+[4] - /usr/src/servers/pm/misc.c	= System Call code from all the system call from type "misc"
+[5] - /usr/include/minhachamadalib.h	= This is the include file that calls our system call.
+[6] - /root/teste1.c			= This file will be created to test our system call.
 
 Step 1
 ------
