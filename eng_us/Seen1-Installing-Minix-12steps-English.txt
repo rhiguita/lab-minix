@@ -1,0 +1,15 @@
+English - Installing Minix with 12 steps (Virtual Machine)
+----------------------------------------------------------
+Let´s follow the steps:
+1 - Download the actual ISO (http://www.minix3.org/iso/minix_R3.2.1-972156d.iso.bz2) and decompress the BZ2 file;
+2 - Create a new virtual machine (VirtualBox or VMWare) with a 40Gb hard disk;
+3 - Configure the network as NAT or Bridge for the future work;
+4 - Configure the virtual CD/DVD to use the ISO;
+5 - Start the virtual machine and enter in Default kernel;
+6 - Login as "root";
+7 - Start the setup script: "setup";
+8 - There is no need to change anything, just press ENTER and type "yes" when asked;
+9 - In the end, "remove" the ISO from your virtual CD/DVD and reboot the machine with "reboot";
+10 - In bootloader enter again in Default option;
+11 - Login as "root" and change your password with "passwd";
+12 - Try to ping some site to verify your connection "ping www.google.com".

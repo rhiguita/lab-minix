@@ -1,0 +1,31 @@
+Changing Minix main source file
+-------------------------------
+
+1 - Let´s open the following file:
+vi /usr/src/kernel/main.c
+
+2 - Search for this:
+static void announce(void)
+
+3 - Change the following line:
+printf("MINIX is opern source software, see http://www.minix3.org\n");
+By:
+printf("BR-MINIX is opern source software, see http://www.minix3.org\n");
+
+4 - Save the file and come back to shell
+
+5 - Let´s compile:
+make 
+
+6 - Let´s update using the incremental way (this option is not always possible):
+cd /usr/src
+make build MKUPDATE=yes
+
+7 - Reboot
+reboot
+
+8 - The option "2", the default one, is the last compiled.
+
+References
+----------
+[1] http://wiki.minix3.org/en/DevelopersGuide/TrackingCurrent

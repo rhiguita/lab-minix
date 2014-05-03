@@ -1,0 +1,95 @@
+Creating a System Call in Minix
+-------------------------------
+
+Goal: Create a system call in Minix 3.2.1
+-----------------------------------------
+
+What do you need:
+-----------------
+Softwares: Minix 3.2.1
+Optional: VMWare ou VirtualBox
+knowledge: how to use "vi" and basic concepts about "C language"
+
+
+We will use those files:
+------------------------
+[1] - /usr/src/include/minix/callnr.h	= Constantes indicando o nome da chamada e o seu número
+[2] - /usr/src/servers/pm/table.c	= Nomes das rotinas de cada uma das chamadas de sistema
+[3] - /usr/src/servers/pm/proto.h	= Protótipo de todas as rotinas de chamadas de sistema
+[4] - /usr/src/servers/pm/misc.c	= O código das chamadas de sistema do tipo "misc"
+[5] - /usr/include/minhachamadalib.h	= O include que chama a nossa chamada de sistema (Este arquivo será criado)
+[6] - /root/teste1.c			= O programa que irá testar nossa chamada de sistema (Este arquivo será criado)
+
+Step 1
+------
+- Opern the file [1]: vi /usr/src/include/minix/callnr.h
+- Insert the follow line between system calls number 68 and 71: #define MYSYSCALL 69
+- Save the file and quit: wq
+Obs: this file is ordered numerically, then you need to insert the line in the exact place.
+
+Step 2
+------
+- Open the file [2]: vi /usr/src/servers/pm/table.c
+- Search for this line: no_sys,	/* 69 = unused */
+- Replace this line by: do_mysyscall,	/* 69 = my sys call */
+- Save the file and quit: wq
+
+Step 3
+------
+- Open the file [3]: vi /usr/src/servers/pm/proto.h
+- Search for this line: int do_getsetpriority(void); (inside /* misc.c */)
+- Add one line before the previous line: int do_mysyscall(void);
+- Save the file and quit: wq
+
+Step 4
+------
+- Open the file [4]: vi /usr/src/servers/pm/misc.c
+- Go to end of the file and add the following code:
+	int do_mysyscall(void)
+	{
+		printf("This is my system call!\n");
+		return 0;
+	}
+- Save the file and quit: wq
+
+Step 5
+------
+- Make sure you are in the following directory: cd /usr/src/servers/pm
+- Letr´s try to compile the definitions, type: make
+- If you have an error check the previous steps, otherwise proceed to the next step.
+
+Step 6
+------
+- Let´s create the file [5]: vi /usr/include/mysyscalllib.h
+- With the following lines:
+	#include <lib.h>
+	#include <unistd.h>
+	int mysyscall()
+	{
+		message m;
+		return ( _syscall(PM_PROC_NR, MYSYSCALL, &m) );
+	}
+- Save the file and quit: wq
+
+Step 7
+------
+- Go to the following directory: cd /usr/src/releasetools
+- Type: make install
+- After, type: sync
+- Type: reboot
+
+Step 8
+------
+- Let´s got to the "root" directory: cd /root
+- Let´s create the file [6] to call our system call: vi test1.c
+- With the following lines:
+	#include <mysyscalllib.h>
+	int main(void)
+	{
+		mysyscall();
+		return 0;
+	}
+- Save the file and quit: wq
+- Compile the file: cc test1.c -o test1.out
+- Run the file: ./test1.out
+- If everything was fine you will see: This is my system call!

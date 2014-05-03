@@ -1,0 +1,41 @@
+Updating Minix Kernel
+---------------------
+
+1 - Vamos para o diretório "/usr" e renomear o antigo diretório "src.release"
+cd /usr
+mv src src.release
+
+2 - Update the package list and copy the Git package:
+pkgin up
+pkgin in scmgit-base
+
+3 - Let´s clone the Minix directory:
+git clone git://git.minix3.org/minix src
+
+4 - When you want to update again in the future:
+git pull
+
+5 - Let´s compile the "kernel":
+cd /usr/src
+make build
+
+6 - An error will happen because of "textinfo" and we should fix it doing the following:
+pkgin up 
+pkgin in gtexinfo 
+cd /usr/src/gnu/usr.bin/texinfo 
+makeinfo -I/usr/src/gnu/dist/texinfo/doc --no-split -o info-stnd.info /usr/src/gnu/dist/texinfo/doc/info-stnd.texi 
+makeinfo -I/usr/src/gnu/dist/texinfo/doc --no-split -o info.info /usr/src/gnu/dist/texinfo/doc/info.texi 
+makeinfo -I/usr/src/gnu/dist/texinfo/doc --no-split -o texinfo.info /usr/src/gnu/dist/texinfo/doc/texinfo.txi 
+cd ../../.. 
+make -C gnu/usr.bin/texinfo all 
+make -C gnu/usr.bin/texinfo all install 
+TOOL_MAKEINFO=/usr/src/gnu/usr.bin/texinfo/makeinfo/makeinfo 
+make build 
+
+7- Reboot the system:
+reboot
+
+References
+----------
+[1] http://wiki.minix3.org/en/DevelopersGuide/TrackingCurrent
+[2] https://groups.google.com/forum/#!searchin/minix3/texinfo/minix3/vNd00q5PdnA/N6_-1BVYlcIJ
