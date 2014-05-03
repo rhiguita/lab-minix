@@ -1,0 +1,31 @@
+Vamos fazer uma alteração no arquivo principal do Minix
+-------------------------------------------------------
+
+1 - Se fizer uma alteração, por exemplo em:
+vi /usr/src/kernel/main.c
+
+2 - Procure pelas seguinte rotina:
+static void announce(void)
+
+3 - Realize a seguinte alteração, substituindo a seguinte linha:
+printf("MINIX is opern source software, see http://www.minix3.org\n");
+por...:
+printf("BR-MINIX is opern source software, see http://www.minix3.org\n");
+
+4 - Salve o arquivo e volte para o shell
+
+5 - Vamos compilar o módulo
+make 
+
+6 - Vamos atualizar de maneira incremental (nem sempre isso é possível...):
+cd /usr/src
+make build MKUPDATE=yes
+
+7 - Reinicie
+reboot
+
+8 - A opção [2] do boot, que é default, é a última que foi compilada, ou seja, a anterior.
+
+Referências
+-----------
+[1] http://wiki.minix3.org/en/DevelopersGuide/TrackingCurrent

@@ -1,0 +1,95 @@
+Criando uma chamada de sistema no Minix
+---------------------------------------
+
+Objetivo: Criar uma chamada de sistema no Minix 3.2.1.
+------------------------------------------------------
+
+O que você precisa:
+-------------------
+Softwares: Minix 3.2.1
+Opcional: VMWare ou VirtualBox
+Conhecimentos: uso do editor "vi" e básico em "linguagem C".
+
+
+Iremos trabalhar com os seguintes arquivos hoje:
+------------------------------------------------
+[1] - /usr/src/include/minix/callnr.h	= Constantes indicando o nome da chamada e o seu número
+[2] - /usr/src/servers/pm/table.c	= Nomes das rotinas de cada uma das chamadas de sistema
+[3] - /usr/src/servers/pm/proto.h	= Protótipo de todas as rotinas de chamadas de sistema
+[4] - /usr/src/servers/pm/misc.c	= O código das chamadas de sistema do tipo "misc"
+[5] - /usr/include/minhachamadalib.h	= O include que chama a nossa chamada de sistema (Este arquivo será criado)
+[6] - /root/teste1.c			= O programa que irá testar nossa chamada de sistema (Este arquivo será criado)
+
+Passo 1
+-------
+- Abrir o arquivo [1]: vi /usr/src/include/minix/callnr.h
+- Coloque a seguinte linha entre a chamada 68 e 71: #define MINHACHAMADA 69
+- Salve o arquivo e sair: wq
+Obs: este arquivo está em ordenado em ordem numérica, portanto você deverá colocar a sua definição no local exato
+
+Passo 2
+-------
+- Abrir o arquivo [2]: vi /usr/src/servers/pm/table.c
+- Procure pela seguinte linha: no_sys,	/* 69 = unused */
+- Substitua essa linha por: do_minhachamada,	/* 69 = minhachamada */
+- Salve o arquivo e sair: wq
+
+Passo 3
+-------
+- Abrir o arquivo [3]: vi /usr/src/servers/pm/proto.h
+- Procure pela seguinte linha: int do_getsetpriority(void); (dentro de /* misc.c */)
+- Acrescentar uma linha logo abaixo da anterior com o seguinte conteúdo: int do_minhachamada(void);
+- Salve o arquivo e sair: wq
+
+Passo 4
+-------
+- Abrir o arquivo [4]: vi /usr/src/servers/pm/misc.c
+- Vá até o final do arquivo e acrescente o seguinte trecho de código:
+	int do_minhachamada(void)
+	{
+		printf("Esta eh minha chamada de sistema!\n");
+		return 0;
+	}
+- Salve o arquivo e sair: wq
+
+Passo 5
+-------
+- Tenha certeza de que está no seguinte diretório: cd /usr/src/servers/pm
+- Vamos tentar compilar as definições, digite: make
+- Se apresentar erro verifique os passos anteriores, caso contrário passe a o próximo passo
+
+Passo 6
+-------
+- Vamos criar o arquivo [5]: vi /usr/include/minhachamadalib.h
+- O conteúdo desse arquivo será:
+	#include <lib.h>
+	#include <unistd.h>
+	int minhachamada()
+	{
+		message m;
+		return ( _syscall(PM_PROC_NR, MINHACHAMADA, &m) );
+	}
+- Salve o arquivo e sair: wq
+
+Passo 7
+-------
+- Entrar no seguinte diretório: cd /usr/src/releasetools
+- Digite: make install
+- Depois digite: sync
+- Por fim, digite: reboot
+
+Passo 8
+-------
+- Vamos para o diretório de nosso usuário "root": cd /root
+- Vamos criar o arquivo [6] para chamar a nossa chamada de sistema: vi teste1.c
+- O conteúdo desse arquivo será:
+	#include <mycalllib.h>
+	int main(void)
+	{
+		minhachamada();
+		return 0;
+	}
+- Salve o arquivo e sair: wq 
+- Compile o arquivo: cc teste1.c -o teste1.out
+- Execute o arquivo: ./teste1.out
+- Se deu tudo certo você verá: Essa eh minha chamada de sistema!

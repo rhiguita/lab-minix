@@ -1,0 +1,15 @@
+Portuguese - Instalando o Minix em 12 passos (Máquina Virtual)
+--------------------------------------------------------------
+Vamos aos procedimentos:
+1 - Faça o download da ISO atual no site (http://www.minix3.org/iso/minix_R3.2.1-972156d.iso.bz2) e descompacte o arquivo BZ2;
+2 - Crie uma maquina virtual (VirtualBox ou VMWare) com um HD de 40Gb;
+3 - Coloque a rede da máquina virtual em NAT ou Bridge para os downloads na "Atividade de Atualizao do Kernel";
+4 - Coloque a ISO no CD-ROM virtual;
+5 - De boot na máquina e deixe entrar na opção Default (Padrão);
+6 - Realize o login como "root";
+7 - Inicie o script de instalação "setup";
+8 - Não há necessidade de mudar nenhuma opção padrão, pressione ENTER em todas e digite "yes" quando solicitado;
+9 - Ao final, "retire" a ISO do CD virtual e reinicie a máquina virtual com o comando "reboot"
+10 - No bootloader deixe entrar novamente na opção Default;
+11 - Logue como "root" e mude sua senha com o comando "passwd";
+12 - Tente dar um ping em algum site para verificar sua conexão "ping www.google.com".

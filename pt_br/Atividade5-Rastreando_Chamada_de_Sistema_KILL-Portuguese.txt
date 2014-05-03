@@ -1,0 +1,88 @@
+Mapeando a chamada de sistema "KILL" via comando "kill"
+-------------------------------------------------------
+
+Software
+--------
+OS: Minix 3.2.1
+
+Arquivos Utilizados
+-------------------
+[1] - /usr/src/include/minix/callnr.h	= Constantes indicando o nome da chamada e o seu número
+[2] - /usr/src/servers/pm/table.c	= Nomes das rotinas de cada uma das chamadas de sistema
+[3] - /usr/src/servers/pm/proto.h	= Protótipo de todas as rotinas de chamadas de sistema
+[4] - /usr/src/servers/pm/signal.c	= O código das chamadas de sistema do tipo "signal"
+
+Passo 1 - LOCALIZE O NOME DA CHAMADA DE SISTEMA DESEJADA
+--------------------------------------------------------
+1 - Vamos até o diretório do item [1]: cd /usr/src/include/minix
+2 - Abra o arquivo [1]: mined /usr/src/include/minix/callnr.h
+3 - Localize a chamada de número 37, chamada de "KILL" (#define KILL 37).
+
+Passo 2 - LOCALIZANDO O NOME DA ROTINA DA CHAMADA DE SISTEMA
+------------------------------------------------------------
+1 - Vamos até o diretório do servidor PM (Process Manager) do item [2]: cd /usr/src/servers/pm
+2 - Abra o arquivo [2]: mined /usr/src/servers/pm/table.c
+3 - Localize a chamada de número 37, chamada de "do_kill".
+
+Passo 3 - LOCALIZANDO O PROTÓTIPO DA ROTINA ANTERIOR
+----------------------------------------------------
+1 - Abra o arquivo [3]: mined /usr/src/servers/pm/proto.h
+2 - Localize a função da chamada de sistema: "int do_kill(void);"
+3 - Observe que na linha anterior está ilustrado o arquivo onde ela está (signal.c)
+
+Passo 4 - LOCALIZANDO O CÓDIGO DA CHAMADA DE SISTEMA
+----------------------------------------------------
+1 - Abra o arquivo [4]: mined /usr/src/servers/pm/signal.c
+2 - Localize a rotina "int do_kill"
+3 - Observe que ela possui somente uma linha:
+return check_sig(m_in.pid, m_in.sig_nr, FALSE /* ksig */);
+4 - Acrescente a seguinte linha como sendo a primeira nessa rotina:
+printf("\ndo_kill");
+
+Passo 5 - LOCALIZANDO A ROTINA "check_sig"
+------------------------------------------
+1 - No arquivo [4] já aberto localize a rotina:
+int check_sig(proc_id, signo, ksig)
+2 - Veja que ela recebe três parâmetros:
+pid_t proc_id = PID do processo que vai receber o sinal
+signo = sinal que será enviado ao processo
+ksig = valor diferente de 0 indica que o sinal veio do kernel
+3 - Acrescente a seguinte linha como sendo a primeira nessa rotina:
+printf("\ncheck_sig - Proc = %d, Signo = %d, Ksig = %d",proc_id,signo,ksig);
+4 - Salve o arquivo: Ctrl+W
+
+Passo 6 - RECOMPILE O SERVIDOR "PM"
+-----------------------------------
+1 - Digite "make" para processar o "Makefile"
+2 - Se tudo correu bem será gerado o arquivo "pm"
+
+Passo 7 - RECOMPILAR O KERNEL
+-----------------------------
+1 - Entrar no seguinte diretório: cd /usr/src/releasetools
+2 - Digite: make install
+3 - Reinicialize o sistema: reboot
+
+Passo 8 - TEST 1
+----------------
+1 - Faça o login em 2 terminais (ttyc0 e ttyc1)
+2 - No "ttyc0", liste os processos (ps -a)
+3 - Envie o sinal de "KILL" para o "-sh" do "ttyc1" e veja:
+do_kill
+check_sig - Proc = 136*, Signo = 9, Ksig = 0
+*136 = Este é o PID do seu "-sh", como exemplo, 136
+
+Passo 9 - TEST 2
+----------------
+1 - Crie um arquivo no seu diretório HOME com o seguinte código:
+#include <stdio.h>
+#include <signal.h>
+
+int main() {
+	int pid;
+	printf("\nPID to kill: ");
+	scanf("&d",&pid);
+	kill(pid,9);
+	return 0;
+}
+2 - O parâmetro de valor 9 da rotina "kill" equivale ao sinal KILL
+3 - Realize um teste similar ao TEST 1
