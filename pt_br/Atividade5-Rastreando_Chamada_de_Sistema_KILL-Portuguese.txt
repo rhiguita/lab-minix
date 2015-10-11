@@ -80,7 +80,7 @@ Passo 9 - TEST 2
 int main() {
 	int pid;
 	printf("\nPID to kill: ");
-	scanf("&d",&pid);
+	scanf("%d",&pid);
 	kill(pid,9);
 	return 0;
 }
